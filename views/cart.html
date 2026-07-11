@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito - Valma</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <i class="fas fa-sparkles"></i>
+                <span>VALMA</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fas fa-store"></i> Tienda</a>
+                <div class="user-menu" id="userMenu">
+                    <a href="/login" class="nav-link">Iniciar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="cart-page">
+        <div class="container">
+            <h1><i class="fas fa-shopping-cart"></i> Mi Carrito</h1>
+
+            <div class="cart-content" id="cartContent">
+                <!-- El carrito se carga dinámicamente -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/js/product-image.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/whatsapp-checkout.js"></script>
+    <script src="/js/cart.js"></script>
+</body>
+</html>

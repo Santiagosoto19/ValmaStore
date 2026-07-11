@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pedidos - Valma</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="admin-logo">
+                <i class="fas fa-sparkles"></i>
+                <span>VALMA</span>
+            </a>
+            <span class="admin-badge">Admin</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/admin" class="nav-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/productos" class="nav-item">
+                <i class="fas fa-box"></i>
+                <span>Productos</span>
+            </a>
+            <a href="/admin/pedidos" class="nav-item active">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Pedidos</span>
+            </a>
+            <a href="/admin/marquee" class="nav-item">
+                <i class="fas fa-bullhorn"></i>
+                <span>Banner Marquee</span>
+            </a>
+            <a href="/" class="nav-item">
+                <i class="fas fa-store"></i>
+                <span>Ver Tienda</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="admin-page-toolbar">
+            <header class="admin-header">
+                <h1>Gestión de Pedidos</h1>
+            </header>
+
+            <div class="admin-filters product-filters-bar admin-toolbar-filters">
+                <div class="filter-group product-filter-group">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar por número o cliente...">
+                    </div>
+                    <select id="statusFilter" onchange="loadOrders(1)">
+                        <option value="">Todos los estados</option>
+                        <option value="pending">Pendiente</option>
+                        <option value="confirmed">Confirmado</option>
+                        <option value="paid">Pagado</option>
+                        <option value="processing">En Proceso</option>
+                        <option value="shipped">Enviado</option>
+                        <option value="delivered">Entregado</option>
+                        <option value="cancelled">Cancelado</option>
+                    </select>
+                    <input type="date" id="dateFrom" placeholder="Desde" onchange="loadOrders(1)">
+                    <input type="date" id="dateTo" placeholder="Hasta" onchange="loadOrders(1)">
+                    <button class="btn btn-secondary btn-sm" onclick="clearOrderFilters()">
+                        <i class="fas fa-undo"></i> Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-content admin-list-layout">
+            <div class="stats-grid" id="orderStats"></div>
+
+            <!-- Orders Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Pedido</th>
+                            <th>Cliente</th>
+                            <th>Contacto</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTable">
+                        <!-- Pedidos se cargan dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </main>
+
+    <!-- Order Detail Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2>Detalle del Pedido</h2>
+                <button class="modal-close" onclick="closeOrderModal()"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="modal-body" id="orderModalBody">
+                <!-- Contenido se carga dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/js/admin-common.js"></script>
+    <script src="/js/admin-orders.js"></script>
+</body>
+</html>

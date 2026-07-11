@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Valma</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="admin-logo">
+                <i class="fas fa-sparkles"></i>
+                <span>VALMA</span>
+            </a>
+            <span class="admin-badge">Admin</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/admin" class="nav-item active">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/productos" class="nav-item">
+                <i class="fas fa-box"></i>
+                <span>Productos</span>
+            </a>
+            <a href="/admin/pedidos" class="nav-item">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Pedidos</span>
+            </a>
+            <a href="/admin/marquee" class="nav-item">
+                <i class="fas fa-bullhorn"></i>
+                <span>Banner Marquee</span>
+            </a>
+            <a href="/" class="nav-item">
+                <i class="fas fa-store"></i>
+                <span>Ver Tienda</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1>Dashboard</h1>
+            <div class="header-user">
+                <span id="userName">Administrador</span>
+                <i class="fas fa-user-circle"></i>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- Stats Cards -->
+            <div class="stats-grid" id="statsGrid"></div>
+
+            <!-- Recent Orders -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-shopping-bag"></i> Pedidos Recientes</h2>
+                    <a href="/admin/pedidos" class="btn btn-outline btn-sm">Ver Todos</a>
+                </div>
+
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrders">
+                            <!-- Pedidos se cargan dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/js/admin-common.js"></script>
+    <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>

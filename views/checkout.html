@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Valma</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <i class="fas fa-sparkles"></i>
+                <span>VALMA</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fas fa-store"></i> Tienda</a>
+                <div class="user-menu" id="userMenu">
+                    <a href="/login" class="nav-link">Iniciar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="checkout-page">
+        <div class="container">
+            <h1><i class="fas fa-credit-card"></i> Finalizar Compra</h1>
+
+            <div class="checkout-content" id="checkoutContent">
+                <!-- El checkout se carga dinámicamente -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2024 Valma. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/js/product-image.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // Verificar autenticación y cargar carrito
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('user');
+            if (!user) {
+                window.location.href = '/login';
+                return;
+            }
+            updateUserMenu();
+            loadCheckout();
+        });
+
+        // Cargar checkout
+        async function loadCheckout() {
+            const checkoutContent = document.getElementById('checkoutContent');
+
+            try {
+                // Obtener carrito
+                const cartResponse = await fetch('/api/cart', {
+                    credentials: 'include'
+                });
+                const cartData = await cartResponse.json();
+
+                if (!cartData.success || !cartData.data.items || cartData.data.items.length === 0) {
+                    checkoutContent.innerHTML = `
+                        <div class="empty-checkout">
+                            <i class="fas fa-shopping-basket"></i>
+                            <h2>Tu carrito está vacío</h2>
+                            <p>Agrega productos antes de finalizar la compra</p>
+                            <a href="/" class="btn btn-primary">Ver Productos</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const { items, summary } = cartData.data;
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+                checkoutContent.innerHTML = `
+                    <div class="checkout-layout">
+                        <div class="checkout-form-section">
+                            <h2>Información de Envío</h2>
+
+                            <form id="checkoutForm" class="checkout-form">
+                                <div class="form-group">
+                                    <label for="shippingAddress">Dirección de Envío *</label>
+                                    <div class="input-group">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <input type="text" id="shippingAddress" name="shippingAddress" required
+                                               value="${user.address || ''}" placeholder="Calle 123 # 45-67, Apartamento 101">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="shippingCity">Ciudad *</label>
+                                    <div class="input-group">
+                                        <i class="fas fa-city"></i>
+                                        <input type="text" id="shippingCity" name="shippingCity" required
+                                               value="${user.city || ''}" placeholder="Bogotá">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="shippingPhone">Teléfono de Contacto *</label>
+                                    <div class="input-group">
+                                        <i class="fas fa-phone"></i>
+                                        <input type="tel" id="shippingPhone" name="shippingPhone" required
+                                               value="${user.phone || ''}" placeholder="300 123 4567">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="notes">Notas Adicionales (opcional)</label>
+                                    <textarea id="notes" name="notes" rows="3" placeholder="Instrucciones de entrega, referencias, etc."></textarea>
+                                </div>
+
+                                <div class="payment-info">
+                                    <h3><i class="fas fa-info-circle"></i> Información de Pago</h3>
+                                    <p>Al confirmar tu pedido, serás redirigido a WhatsApp para coordinar el pago.</p>
+                                    <p>Aceptamos: <strong>Transferencia bancaria, Nequi, Daviplata</strong></p>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                    <i class="fab fa-whatsapp"></i> Confirmar Pedido por WhatsApp
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="checkout-summary-section">
+                            <h2>Resumen del Pedido</h2>
+
+                            <div class="checkout-items">
+                                ${items.map(item => `
+                                    <div class="checkout-item">
+                                        <img src="${resolveProductImage(item.image_url)}" alt="${item.product_name}">
+                                        <div class="checkout-item-info">
+                                            <p class="item-name">${item.product_name}</p>
+                                            <p class="item-brand">${item.brand_name || 'Sin marca'}</p>
+                                            <p class="item-quantity">Cantidad: ${item.quantity}</p>
+                                        </div>
+                                        <div class="checkout-item-price">
+                                            ${formatPrice(item.price_at_time * item.quantity)}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div class="checkout-totals">
+                                <div class="total-row">
+                                    <span>Subtotal</span>
+                                    <span>${formatPrice(summary.subtotal)}</span>
+                                </div>
+                                <div class="total-row grand-total">
+                                    <span>Total</span>
+                                    <span>${formatPrice(summary.subtotal)}</span>
+                                </div>
+                            </div>
+
+                            <a href="/carrito" class="btn btn-outline btn-block">Editar Carrito</a>
+                        </div>
+                    </div>
+                `;
+
+                // Manejar envío del formulario
+                document.getElementById('checkoutForm').addEventListener('submit', handleCheckout);
+
+            } catch (error) {
+                console.error('Error cargando checkout:', error);
+                checkoutContent.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Error al cargar el checkout. Intenta de nuevo.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Manejar checkout
+        async function handleCheckout(e) {
+            e.preventDefault();
+
+            const formData = {
+                shippingAddress: document.getElementById('shippingAddress').value,
+                shippingCity: document.getElementById('shippingCity').value,
+                shippingPhone: document.getElementById('shippingPhone').value,
+                notes: document.getElementById('notes').value
+            };
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+
+            try {
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('¡Pedido creado exitosamente!', 'success');
+
+                    // Redirigir a WhatsApp
+                    if (data.data.whatsappLink) {
+                        setTimeout(() => {
+                            window.open(data.data.whatsappLink, '_blank');
+                            window.location.href = '/mis-pedidos';
+                        }, 1000);
+                    } else {
+                        setTimeout(() => {
+                            window.location.href = '/mis-pedidos';
+                        }, 1000);
+                    }
+                } else {
+                    showToast(data.message || 'Error al crear el pedido', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Confirmar Pedido por WhatsApp';
+                }
+            } catch (error) {
+                showToast('Error de conexión', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Confirmar Pedido por WhatsApp';
+            }
+        }
+
+        // Formatear precio
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+    </script>
+</body>
+</html>

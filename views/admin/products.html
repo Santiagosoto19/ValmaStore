@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos - Valma</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="admin-logo">
+                <i class="fas fa-sparkles"></i>
+                <span>VALMA</span>
+            </a>
+            <span class="admin-badge">Admin</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/admin" class="nav-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/productos" class="nav-item active">
+                <i class="fas fa-box"></i>
+                <span>Productos</span>
+            </a>
+            <a href="/admin/pedidos" class="nav-item">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Pedidos</span>
+            </a>
+            <a href="/admin/marquee" class="nav-item">
+                <i class="fas fa-bullhorn"></i>
+                <span>Banner Marquee</span>
+            </a>
+            <a href="/" class="nav-item">
+                <i class="fas fa-store"></i>
+                <span>Ver Tienda</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="admin-page-toolbar">
+            <header class="admin-header">
+                <h1>Gestión de Productos</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openProductModal()">
+                        <i class="fas fa-plus"></i> Nuevo Producto
+                    </button>
+                </div>
+            </header>
+
+            <div class="admin-filters product-filters-bar admin-toolbar-filters">
+                <div class="filter-group product-filter-group">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar productos...">
+                    </div>
+                    <select id="brandFilter">
+                        <option value="">Todas las marcas</option>
+                    </select>
+                    <select id="typeFilter">
+                        <option value="">Todos los tipos</option>
+                    </select>
+                </div>
+                <div class="filter-chips-bar">
+                    <button class="filter-chip" id="chipActive" onclick="toggleQuickFilter('active')">Activos</button>
+                    <button class="filter-chip" id="chipNoStock" onclick="toggleQuickFilter('noStock')">Sin Stock</button>
+                    <button class="filter-chip" id="chipFeatured" onclick="toggleQuickFilter('featured')">Destacados</button>
+                    <button class="filter-chip" id="chipSale" onclick="toggleQuickFilter('sale')">Ofertas</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-content admin-list-layout">
+            <div class="stats-grid" id="productStats"></div>
+
+            <div class="products-meta-bar">
+                <span id="productsCounter">Mostrando 0 de 0 productos</span>
+                <div class="items-per-page">
+                    <label>Mostrar:</label>
+                    <select id="itemsPerPage" onchange="loadProducts(1)">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="table-container">
+                <table class="admin-table product-admin-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Tipo</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTable">
+                        <!-- Productos se cargan dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </main>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content modal-lg product-modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nuevo Producto</h2>
+                <button type="button" class="modal-close" onclick="closeProductModal()" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="productForm" class="product-form" novalidate>
+                <input type="hidden" id="productId">
+                <input type="hidden" id="productImageUrl">
+
+                <div class="product-form-grid">
+                    <!-- Panel de imagen -->
+                    <section class="product-form-card product-form-image-panel">
+                        <h3 class="product-form-section-title">
+                            <i class="fas fa-image"></i> Imagen del producto
+                        </h3>
+
+                        <div class="image-upload-zone" id="imageDropZone">
+                            <input type="file" id="productImageFile" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+                            <div class="image-upload-placeholder" id="imageUploadPlaceholder">
+                                <div class="image-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                <p class="image-upload-title">Arrastra tu imagen aquí</p>
+                                <p class="image-upload-hint">o haz clic para seleccionar</p>
+                                <span class="image-upload-formats">JPG, PNG, WebP · máx. 5 MB</span>
+                            </div>
+                            <div class="image-upload-preview" id="imageUploadPreview" hidden>
+                                <img id="imagePreviewImg" src="" alt="Vista previa">
+                                <div class="image-preview-actions">
+                                    <button type="button" class="btn btn-sm btn-outline" id="btnChangeImage">
+                                        <i class="fas fa-sync-alt"></i> Cambiar
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger-outline" id="btnRemoveImage">
+                                        <i class="fas fa-trash"></i> Quitar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="image-url-fallback">
+                            <label for="productImageExternal">O pegar URL externa</label>
+                            <input type="url" id="productImageExternal" placeholder="https://ejemplo.com/imagen.jpg">
+                        </div>
+                    </section>
+
+                    <!-- Campos del producto -->
+                    <div class="product-form-fields">
+                        <section class="product-form-card">
+                            <h3 class="product-form-section-title">
+                                <i class="fas fa-tag"></i> Información básica
+                            </h3>
+                            <div class="product-form-fields-grid">
+                                <div class="form-group form-group-full">
+                                    <label for="productName">Nombre <span class="required">*</span></label>
+                                    <input type="text" id="productName" required placeholder="Ej. Labial mate rojo intenso">
+                                </div>
+                                <div class="form-group form-group-full">
+                                    <label for="productDescription">Descripción</label>
+                                    <textarea id="productDescription" rows="3" placeholder="Describe el producto, tono, acabado, beneficios..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="productPrice">Precio (COP) <span class="required">*</span></label>
+                                    <input type="number" id="productPrice" required min="0" step="1" placeholder="45000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="productStock">Stock <span class="required">*</span></label>
+                                    <input type="number" id="productStock" required min="0" placeholder="10">
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="product-form-card">
+                            <h3 class="product-form-section-title">
+                                <i class="fas fa-layer-group"></i> Clasificación
+                            </h3>
+                            <div class="product-form-fields-grid">
+                                <div class="form-group">
+                                    <label for="productBrand">Marca</label>
+                                    <select id="productBrand">
+                                        <option value="">Seleccionar marca</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="productType">Tipo de producto</label>
+                                    <select id="productType">
+                                        <option value="">Seleccionar tipo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="product-form-card">
+                            <h3 class="product-form-section-title">
+                                <i class="fas fa-sliders-h"></i> Visibilidad
+                            </h3>
+                            <div class="product-form-toggles">
+                                <label class="toggle-card">
+                                    <input type="checkbox" id="productFeatured">
+                                    <span class="toggle-card-content">
+                                        <i class="fas fa-star"></i>
+                                        <span class="toggle-card-label">Destacado</span>
+                                        <span class="toggle-card-hint">Aparece en la sección principal</span>
+                                    </span>
+                                </label>
+                                <label class="toggle-card">
+                                    <input type="checkbox" id="productActive" checked>
+                                    <span class="toggle-card-content">
+                                        <i class="fas fa-eye"></i>
+                                        <span class="toggle-card-label">Activo</span>
+                                        <span class="toggle-card-hint">Visible en la tienda</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <div class="modal-footer product-form-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveProduct">
+                        <i class="fas fa-save"></i> Guardar producto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Eliminar Producto</h2>
+                <button class="modal-close" onclick="closeDeleteModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-trash-alt" style="font-size: 3rem; color: var(--danger); margin-bottom: 1rem;"></i>
+                <p>¿Estás seguro de que quieres eliminar este producto?</p>
+                <p class="text-muted">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancelar</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/js/admin-common.js"></script>
+    <script src="/js/admin-products.js"></script>
+</body>
+</html>

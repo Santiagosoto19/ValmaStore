@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valma - Tienda de Maquillaje</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Marquee Banner -->
+    <div class="marquee-banner" id="marqueeBanner">
+        <div class="marquee-content" id="marqueeContent"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <i class="fas fa-sparkles"></i>
+                <span>VALMA</span>
+            </a>
+
+            <div class="nav-search">
+                <input type="text" id="searchInput" placeholder="Buscar productos...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="nav-links">
+                <a href="/carrito" class="nav-link cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <div class="user-menu" id="userMenu">
+                    <a href="/login" class="nav-link">Iniciar Sesion</a>
+                </div>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Overlay y Panel flotante de filtros centrado -->
+    <div class="filters-overlay" id="filtersOverlay" onclick="closeFiltersPanel()"></div>
+    <div class="filters-float-panel" id="filtersFloatPanel">
+        <div class="filters-float-header">
+            <h3><i class="fas fa-filter"></i> Filtrar productos</h3>
+            <button class="close-filters-float" onclick="closeFiltersPanel()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="filters-float-body">
+            <div class="filter-group">
+                <h4><i class="fas fa-tag"></i> Marcas</h4>
+                <div class="filter-brands-list" id="filterBrandsList">
+                    <!-- Marcas se cargan dinamicamente -->
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h4><i class="fas fa-dollar-sign"></i> Precio</h4>
+                <div class="filter-price-inputs">
+                    <div class="price-input-row">
+                        <label>Desde</label>
+                        <div class="price-input-group">
+                            <span class="price-prefix">$</span>
+                            <input type="number" id="priceMinInput" placeholder="0" min="0" oninput="applyCustomPriceFilter()">
+                        </div>
+                    </div>
+                    <div class="price-input-row">
+                        <label>Hasta</label>
+                        <div class="price-input-group">
+                            <span class="price-prefix">$</span>
+                            <input type="number" id="priceMaxInput" placeholder="Máximo" min="0" oninput="applyCustomPriceFilter()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filters-float-footer">
+            <button class="btn btn-secondary btn-sm" onclick="clearAllFilters()">
+                <i class="fas fa-undo"></i> Limpiar
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="closeFiltersPanel()">
+                <i class="fas fa-check"></i> Aplicar
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <canvas id="particlesCanvas"></canvas>
+            <div class="hero-content">
+                <h1>Descubre tu belleza</h1>
+                <p>Los mejores productos de maquillaje al mejor precio</p>
+                <button class="btn btn-primary btn-lg btn-shimmer" onclick="document.getElementById('productsSection').scrollIntoView({behavior: 'smooth'})">
+                    Ver Productos
+                </button>
+
+                <div class="trust-badges">
+                    <div class="trust-badge">
+                        <i class="fas fa-shipping-fast"></i>
+                        <span>Envio gratis</span>
+                    </div>
+                    <div class="trust-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Pago seguro</span>
+                    </div>
+                    <div class="trust-badge">
+                        <i class="fas fa-undo"></i>
+                        <span>Devoluciones</span>
+                    </div>
+                    <div class="trust-badge">
+                        <i class="fas fa-headset"></i>
+                        <span>Soporte 24/7</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Productos Destacados -->
+        <section class="featured-section">
+            <div class="section-header">
+                <h2><i class="fas fa-star"></i> Productos Destacados</h2>
+            </div>
+            <div class="products-grid" id="featuredProducts">
+                <!-- Productos destacados se cargan dinamicamente -->
+            </div>
+        </section>
+
+        <!-- Todos los Productos -->
+        <section class="products-section" id="productsSection">
+            <div class="section-header">
+                <h2>Nuestros Productos</h2>
+                <div class="section-header-actions">
+                    <button class="btn btn-filter-float-inline" id="btnOpenFilters" onclick="toggleFiltersPanel()">
+                        <i class="fas fa-sliders-h"></i> Filtros
+                        <span class="filter-badge" id="filterBadge" style="display:none;">0</span>
+                    </button>
+                </div>
+            </div>
+            <div class="active-filters-bar" id="activeFiltersBar"></div>
+
+            <div class="products-grid" id="productsGrid">
+                <!-- Productos se cargan dinamicamente -->
+            </div>
+
+            <div class="pagination" id="pagination">
+                <!-- Paginacion se genera dinamicamente -->
+            </div>
+        </section>
+
+        <!-- Por que elegirnos -->
+        <section class="why-section">
+            <div class="section-header text-center">
+                <h2>Por que elegirnos</h2>
+            </div>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-gem"></i></div>
+                    <h3>Productos Premium</h3>
+                    <p>Solo trabajamos con marcas reconocidas y productos de la mas alta calidad.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Envio Rapido</h3>
+                    <p>Recibe tus productos en tiempo record con nuestro envio express.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-medal"></i></div>
+                    <h3>Mejores Precios</h3>
+                    <p>Ofrecemos los mejores precios del mercado con ofertas semanales.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-heart"></i></div>
+                    <h3>Atencion Personalizada</h3>
+                    <p>Te ayudamos a encontrar los productos perfectos para tu tipo de piel.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Elegante -->
+    <footer class="footer-elegant">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>VALMA</h3>
+                <p>Tu tienda de maquillaje de confianza. Productos premium, precios increibles y atencion personalizada para realzar tu belleza natural.</p>
+                <div class="footer-socials">
+                    <a href="#" class="footer-social"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="footer-social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="footer-social"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" class="footer-social"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Categorias</h4>
+                <a href="#">Labios</a>
+                <a href="#">Ojos</a>
+                <a href="#">Rostro</a>
+                <a href="#">Skincare</a>
+                <a href="#">Ofertas</a>
+            </div>
+            <div class="footer-links">
+                <h4>Empresa</h4>
+                <a href="#">Sobre nosotros</a>
+                <a href="#">Contacto</a>
+                <a href="#">Terminos y condiciones</a>
+                <a href="#">Politica de privacidad</a>
+            </div>
+            <div class="footer-links footer-contact">
+                <h4>Contacto</h4>
+                <p><i class="fab fa-whatsapp"></i> +57 300 123 4567</p>
+                <p><i class="fas fa-envelope"></i> info@valma.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Bogota, Colombia</p>
+                <p><i class="fas fa-clock"></i> Lun - Vie: 9am - 6pm</p>
+            </div>
+        </div>
+        <div class="footer-bottom-elegant">
+            <p>&copy; 2024 Valma. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Modal de Producto -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal"><i class="fas fa-times" onclick=" closeProductModal()"></i></button>
+            <div class="modal-body" id="modalBody">
+                <!-- Contenido del modal se carga dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/js/product-image.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
