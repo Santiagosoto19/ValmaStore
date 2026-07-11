@@ -314,4 +314,4 @@ Para soporte o preguntas, contacta al desarrollador.
 
 ---
 
-**Desarrollado con ❤️ para Valma**
+**Desarrollado Por Ing. Santiago Soto*
