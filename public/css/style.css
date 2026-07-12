@@ -5316,10 +5316,42 @@ button {
     }
 }
 
-.brand-form .form-group {
-    margin-bottom: 1rem;
+.brand-modal {
+    max-width: 500px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-.brand-active-toggle {
-    margin-top: 0.25rem;
+.brand-modal .modal-header {
+    padding: 0.875rem 1.25rem;
+    flex-shrink: 0;
+}
+
+.brand-modal .modal-header h2 {
+    margin: 0;
+    font-size: 1.15rem;
+}
+
+.brand-form-body {
+    padding: 0 0 0.25rem;
+}
+
+.brand-form.product-form {
+    padding: 0;
+    gap: 0;
+    overflow: visible;
+}
+
+.brand-form .product-form-fields {
+    gap: 1.25rem;
+}
+
+.brand-form-toggles {
+    grid-template-columns: 1fr;
+}
+
+.brand-form-footer {
+    padding: 1rem 1.25rem;
+    margin: 0;
 }

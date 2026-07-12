@@ -86,36 +86,45 @@
     </main>
 
     <div class="modal" id="brandModal">
-        <div class="modal-content modal-sm">
+        <div class="modal-content modal-sm brand-modal">
             <div class="modal-header">
                 <h2 id="brandModalTitle">Nueva Marca</h2>
                 <button type="button" class="modal-close" id="btnCloseBrandModal" aria-label="Cerrar">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <form id="brandForm" class="brand-form">
+            <form id="brandForm" class="brand-form product-form">
                 <input type="hidden" id="brandId">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="brandName">Nombre <span class="required">*</span></label>
-                        <input type="text" id="brandName" required maxlength="100" placeholder="Ej. Maybelline">
+                <div class="modal-body brand-form-body">
+                    <div class="product-form-fields">
+                        <div class="form-group form-group-full">
+                            <label for="brandName">Nombre <span class="required">*</span></label>
+                            <input type="text" id="brandName" required maxlength="100" placeholder="Ej. Maybelline" autocomplete="off">
+                        </div>
+                        <div class="form-group form-group-full">
+                            <label for="brandDescription">Descripción</label>
+                            <textarea id="brandDescription" rows="4" placeholder="Describe brevemente la marca..."></textarea>
+                        </div>
+                        <section class="product-form-card">
+                            <h3 class="product-form-section-title">
+                                <i class="fas fa-sliders-h"></i> Visibilidad
+                            </h3>
+                            <div class="product-form-toggles brand-form-toggles">
+                                <label class="toggle-card">
+                                    <input type="checkbox" id="brandActive" checked>
+                                    <span class="toggle-card-content">
+                                        <i class="fas fa-eye"></i>
+                                        <span class="toggle-card-label">Marca activa</span>
+                                        <span class="toggle-card-hint">Visible en la tienda y formulario de productos</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </section>
                     </div>
-                    <div class="form-group">
-                        <label for="brandDescription">Descripción</label>
-                        <textarea id="brandDescription" rows="3" placeholder="Breve descripción de la marca"></textarea>
-                    </div>
-                    <label class="toggle-card brand-active-toggle">
-                        <input type="checkbox" id="brandActive" checked>
-                        <span class="toggle-card-content">
-                            <i class="fas fa-eye"></i>
-                            <span class="toggle-card-label">Marca activa</span>
-                            <span class="toggle-card-hint">Visible en la tienda y formulario de productos</span>
-                        </span>
-                    </label>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer product-form-footer brand-form-footer">
                     <button type="button" class="btn btn-secondary" id="btnCancelBrand">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" id="btnSaveBrand">
+                    <button type="submit" class="btn btn-primary btn-lg" id="btnSaveBrand">
                         <i class="fas fa-save"></i> <span id="btnSaveBrandText">Crear marca</span>
                     </button>
                 </div>
