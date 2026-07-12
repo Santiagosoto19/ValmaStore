@@ -110,14 +110,21 @@
                                 <i class="fas fa-sliders-h"></i> Visibilidad
                             </h3>
                             <div class="product-form-toggles brand-form-toggles">
-                                <label class="toggle-card">
-                                    <input type="checkbox" id="brandActive" checked>
-                                    <span class="toggle-card-content">
-                                        <i class="fas fa-eye"></i>
-                                        <span class="toggle-card-label">Marca activa</span>
-                                        <span class="toggle-card-hint">Visible en la tienda y formulario de productos</span>
-                                    </span>
-                                </label>
+                                <div class="brand-visibility-row" id="brandVisibilityRow">
+                                    <div class="brand-visibility-info">
+                                        <span class="brand-visibility-icon" id="brandActiveIconWrap">
+                                            <i class="fas fa-eye" id="brandActiveIcon"></i>
+                                        </span>
+                                        <div class="brand-visibility-text">
+                                            <span class="toggle-card-label" id="brandActiveLabel">Marca activa</span>
+                                            <span class="toggle-card-hint" id="brandActiveHint">Visible en la tienda y formulario de productos</span>
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch brand-visibility-switch" aria-label="Activar o desactivar marca">
+                                        <input type="checkbox" id="brandActive" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
                             </div>
                         </section>
                     </div>

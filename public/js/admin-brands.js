@@ -16,9 +16,31 @@
         document.getElementById('btnCloseBrandModal')?.addEventListener('click', closeBrandModal);
         document.getElementById('btnCancelBrand')?.addEventListener('click', closeBrandModal);
         document.getElementById('brandForm')?.addEventListener('submit', saveBrand);
+        document.getElementById('brandActive')?.addEventListener('change', syncBrandActiveUI);
         document.getElementById('brandModal')?.addEventListener('click', (e) => {
             if (e.target.id === 'brandModal') closeBrandModal();
         });
+    }
+
+    function syncBrandActiveUI() {
+        const isActive = document.getElementById('brandActive')?.checked ?? true;
+        const row = document.getElementById('brandVisibilityRow');
+        const icon = document.getElementById('brandActiveIcon');
+        const label = document.getElementById('brandActiveLabel');
+        const hint = document.getElementById('brandActiveHint');
+
+        row?.classList.toggle('is-inactive', !isActive);
+        if (icon) {
+            icon.className = isActive ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
+        if (label) {
+            label.textContent = isActive ? 'Marca activa' : 'Marca inactiva';
+        }
+        if (hint) {
+            hint.textContent = isActive
+                ? 'Visible en la tienda y formulario de productos'
+                : 'Oculta en la tienda y formulario de productos';
+        }
     }
 
     async function loadBrands() {
@@ -83,6 +105,7 @@
             document.getElementById('brandActive').checked = brand.is_active !== false;
         }
 
+        syncBrandActiveUI();
         document.getElementById('brandModal').classList.add('active');
     }
 

@@ -5333,8 +5333,8 @@ button {
     font-size: 1.15rem;
 }
 
-.brand-form-body {
-    padding: 0 0 0.25rem;
+.brand-modal .modal-body.brand-form-body {
+    padding: 1.5rem;
 }
 
 .brand-form.product-form {
@@ -5344,14 +5344,82 @@ button {
 }
 
 .brand-form .product-form-fields {
-    gap: 1.25rem;
+    gap: 1.5rem;
 }
 
 .brand-form-toggles {
     grid-template-columns: 1fr;
 }
 
+.brand-visibility-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.125rem;
+    background: rgba(194, 24, 89, 0.04);
+    border: 1.5px solid var(--primary);
+    border-radius: 10px;
+    box-shadow: 0 0 0 3px rgba(194, 24, 89, 0.1);
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.brand-visibility-row.is-inactive {
+    background: var(--gray-50, #f9fafb);
+    border-color: var(--gray-200);
+    box-shadow: none;
+}
+
+.brand-visibility-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.brand-visibility-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    color: var(--primary);
+    font-size: 0.95rem;
+    transition: color 0.25s ease;
+}
+
+.brand-visibility-row.is-inactive .brand-visibility-icon {
+    color: var(--gray-400);
+}
+
+.brand-visibility-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.brand-visibility-row.is-inactive .toggle-card-label {
+    color: var(--gray-600);
+}
+
+.brand-visibility-row.is-inactive .toggle-card-hint {
+    color: var(--gray-400);
+}
+
+.brand-visibility-switch {
+    flex-shrink: 0;
+}
+
 .brand-form-footer {
-    padding: 1rem 1.25rem;
+    padding: 1.125rem 1.5rem;
     margin: 0;
+    border-top: 1px solid var(--gray-100, #f3f4f6);
+    gap: 0.875rem;
+}
+
+.brand-form-footer .btn {
+    transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease, color 0.2s ease;
 }
