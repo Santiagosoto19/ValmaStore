@@ -24,7 +24,7 @@ router.get('/health', (req, res) => {
 
 // Configuración pública (número WhatsApp, etc.)
 router.get('/config/public', (req, res) => {
-    const whatsappNumber = (process.env.WHATSAPP_NUMBER || '573001234567').replace(/\D/g, '');
+    const whatsappNumber = (process.env.WHATSAPP_NUMBER || '573224969398').replace(/\D/g, '');
     res.json({
         success: true,
         data: { whatsappNumber }

@@ -85,7 +85,7 @@
         </div>
 
         <div class="admin-content admin-list-layout">
-            <div class="stats-grid" id="productStats"></div>
+            <div class="stats-grid stats-grid--hidden" id="productStats"></div>
 
             <div class="products-meta-bar">
                 <span id="productsCounter">Mostrando 0 de 0 productos</span>
@@ -245,8 +245,8 @@
 
                 <div class="modal-footer product-form-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" id="btnSaveProduct">
-                        <i class="fas fa-save"></i> Guardar producto
+                    <button type="submit" class="btn btn-primary btn-lg" id="btnSaveProduct">
+                        <i class="fas fa-save"></i> <span id="btnSaveProductText">Crear producto</span>
                     </button>
                 </div>
             </form>

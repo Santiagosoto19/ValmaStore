@@ -263,12 +263,19 @@
     }
 
     function renderProductStats(summary) {
-        document.getElementById('productStats').innerHTML = `
+        const grid = document.getElementById('productStats');
+        grid.innerHTML = `
             <div class="stat-card"><div class="stat-icon stat-icon-pink"><i class="fas fa-box"></i></div><div class="stat-info"><span class="stat-value">${summary.total}</span><span class="stat-label">Total</span></div></div>
             <div class="stat-card"><div class="stat-icon stat-icon-green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><span class="stat-value">${summary.active}</span><span class="stat-label">Activos</span></div></div>
             <div class="stat-card"><div class="stat-icon stat-icon-gold"><i class="fas fa-exclamation-circle"></i></div><div class="stat-info"><span class="stat-value">${summary.no_stock}</span><span class="stat-label">Sin Stock</span></div></div>
             <div class="stat-card"><div class="stat-icon stat-icon-blue"><i class="fas fa-star"></i></div><div class="stat-info"><span class="stat-value">${summary.featured}</span><span class="stat-label">Destacados</span></div></div>
         `;
+        grid.classList.remove('stats-grid--hidden');
+    }
+
+    function updateSaveButtonLabel(isEdit) {
+        const label = document.getElementById('btnSaveProductText');
+        if (label) label.textContent = isEdit ? 'Guardar cambios' : 'Crear producto';
     }
 
     function updateCounter(pagination) {
@@ -367,6 +374,7 @@
 
         if (product) {
             title.textContent = 'Editar Producto';
+            updateSaveButtonLabel(true);
             document.getElementById('productId').value = product.id;
             document.getElementById('productName').value = product.name;
             document.getElementById('productDescription').value = product.description || '';
@@ -388,6 +396,7 @@
             }
         } else {
             title.textContent = 'Nuevo Producto';
+            updateSaveButtonLabel(false);
         }
 
         modal.classList.add('active');
@@ -411,8 +420,35 @@
 
     async function saveProduct(e) {
         e.preventDefault();
+        const form = document.getElementById('productForm');
         const productId = document.getElementById('productId').value;
         const saveBtn = document.getElementById('btnSaveProduct');
+
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            AdminCommon.showToast('Completa los campos obligatorios del formulario', 'error');
+            return;
+        }
+
+        const name = document.getElementById('productName').value.trim();
+        const price = parseFloat(document.getElementById('productPrice').value);
+        const stock = parseInt(document.getElementById('productStock').value, 10);
+
+        if (!name) {
+            AdminCommon.showToast('El nombre del producto es obligatorio', 'error');
+            document.getElementById('productName').focus();
+            return;
+        }
+        if (Number.isNaN(price) || price < 0) {
+            AdminCommon.showToast('Ingresa un precio válido', 'error');
+            document.getElementById('productPrice').focus();
+            return;
+        }
+        if (Number.isNaN(stock) || stock < 0) {
+            AdminCommon.showToast('Ingresa un stock válido', 'error');
+            document.getElementById('productStock').focus();
+            return;
+        }
 
         let imageUrl = resolveImageUrlForSave();
 

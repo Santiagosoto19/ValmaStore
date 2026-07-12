@@ -81,12 +81,14 @@
     }
 
     function renderOrderStats(s) {
-        document.getElementById('orderStats').innerHTML = `
+        const grid = document.getElementById('orderStats');
+        grid.innerHTML = `
             <div class="stat-card"><div class="stat-icon stat-icon-blue"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><span class="stat-value">${Number(s.total_count) || 0}</span><span class="stat-label">Total Pedidos Hoy</span></div></div>
             <div class="stat-card"><div class="stat-icon stat-icon-gold"><i class="fas fa-clock"></i></div><div class="stat-info"><span class="stat-value">${Number(s.pending_count) || 0}</span><span class="stat-label">Pendientes</span></div></div>
-            <div class="stat-card"><div class="stat-icon stat-icon-pink"><i class="fas fa-cog"></i></div><div class="stat-info"><span class="stat-value">${Number(s.processing_count) || 0}</span><span class="stat-label">En Proceso</span></div></div>
+            <div class="stat-card"><div class="stat-icon stat-icon-pink"><i class="fas fa-check-circle"></i></div><div class="stat-info"><span class="stat-value">${Number(s.paid_count) || 0}</span><span class="stat-label">Pagados Hoy</span></div></div>
             <div class="stat-card"><div class="stat-icon stat-icon-green"><i class="fas fa-dollar-sign"></i></div><div class="stat-info"><span class="stat-value">${AdminCommon.formatPrice(s.total_revenue)}</span><span class="stat-label">Ingresos Hoy</span></div></div>
         `;
+        grid.classList.remove('stats-grid--hidden');
     }
 
     function clearOrderFilters() {

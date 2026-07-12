@@ -265,17 +265,17 @@ class Order {
     static async getStats() {
         const sql = `
             SELECT
-                COUNT(*) FILTER (WHERE status = 'pending') as pending_count,
-                COUNT(*) FILTER (WHERE status = 'confirmed') as confirmed_count,
-                COUNT(*) FILTER (WHERE status = 'paid') as paid_count,
-                COUNT(*) FILTER (WHERE status = 'processing') as processing_count,
-                COUNT(*) FILTER (WHERE status = 'shipped') as shipped_count,
-                COUNT(*) FILTER (WHERE status = 'delivered') as delivered_count,
-                COUNT(*) FILTER (WHERE status = 'cancelled') as cancelled_count,
-                COUNT(*) as total_count,
-                COALESCE(SUM(total_amount) FILTER (WHERE status IN ('paid', 'shipped', 'delivered')), 0) as total_revenue
-            FROM orders
-            WHERE DATE(created_at) = CURRENT_DATE
+                (SELECT COUNT(*)::int FROM orders WHERE status = 'pending') as pending_count,
+                (SELECT COUNT(*)::int FROM orders WHERE status = 'confirmed' AND DATE(created_at) = CURRENT_DATE) as confirmed_count,
+                (SELECT COUNT(*)::int FROM orders WHERE status = 'paid' AND DATE(created_at) = CURRENT_DATE) as paid_count,
+                (SELECT COUNT(*)::int FROM orders WHERE status = 'processing') as processing_count,
+                (SELECT COUNT(*)::int FROM orders WHERE status = 'shipped' AND DATE(created_at) = CURRENT_DATE) as shipped_count,
+                (SELECT COUNT(*)::int FROM orders WHERE status = 'delivered' AND DATE(created_at) = CURRENT_DATE) as delivered_count,
+                (SELECT COUNT(*)::int FROM orders WHERE status = 'cancelled' AND DATE(created_at) = CURRENT_DATE) as cancelled_count,
+                (SELECT COUNT(*)::int FROM orders WHERE DATE(created_at) = CURRENT_DATE) as total_count,
+                (SELECT COALESCE(SUM(total_amount), 0) FROM orders
+                    WHERE DATE(created_at) = CURRENT_DATE
+                    AND status IN ('paid', 'shipped', 'delivered')) as total_revenue
         `;
         const result = await query(sql);
         return result.rows[0];

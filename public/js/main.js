@@ -7,7 +7,9 @@ let currentFilters = {
     brands: [],
     search: '',
     minPrice: null,
-    maxPrice: null
+    maxPrice: null,
+    typeId: null,
+    typeName: ''
 };
 
 let currentPage = 1;
@@ -51,12 +53,43 @@ function initNavbarScroll() {
 
 function initHomePage() {
     loadBrandsForFilter();
+    loadFooterCategories();
     loadFeaturedProducts();
     loadAllProducts();
     initSearchRealTime();
 }
 
-// Cargar marcas para el panel de filtros
+async function loadFooterCategories() {
+    const container = document.getElementById('footerCategoriesList');
+    if (!container) return;
+
+    try {
+        const response = await fetch('/api/products/types');
+        const data = await response.json();
+
+        if (!data.success || !data.data?.length) {
+            container.innerHTML = '<span class="footer-muted">Sin categorias disponibles</span>';
+            return;
+        }
+
+        container.innerHTML = data.data.map(type => `
+            <a href="#productsSection" class="footer-category-link" data-type-id="${type.id}">
+                ${escapeHtml(type.name)}
+            </a>
+        `).join('');
+
+        container.addEventListener('click', (event) => {
+            const link = event.target.closest('.footer-category-link');
+            if (!link) return;
+            event.preventDefault();
+            filterByCategoryType(parseInt(link.dataset.typeId, 10), link.textContent.trim());
+        });
+    } catch (error) {
+        console.error('Error cargando categorias:', error);
+        container.innerHTML = '<span class="footer-muted">No se pudieron cargar las categorias</span>';
+    }
+}
+
 async function loadBrandsForFilter() {
     try {
         const response = await fetch('/api/products/brands');
@@ -196,6 +229,7 @@ function updateFilterBadge() {
     if (!badge) return;
 
     let count = currentFilters.brands.length;
+    if (currentFilters.typeId) count++;
     if (currentFilters.minPrice !== null || currentFilters.maxPrice !== null) count++;
     if (currentFilters.search) count++;
 
@@ -243,6 +277,15 @@ function renderActiveFilters() {
         `;
     }
 
+    if (currentFilters.typeId && currentFilters.typeName) {
+        chips += `
+            <span class="active-filter-chip">
+                ${escapeHtml(currentFilters.typeName)}
+                <button onclick="removeTypeFilter()"><i class="fas fa-times"></i></button>
+            </span>
+        `;
+    }
+
     container.innerHTML = chips;
 }
 
@@ -276,8 +319,16 @@ function removeSearchFilter() {
     applyFiltersAndRender();
 }
 
+function removeTypeFilter() {
+    currentFilters.typeId = null;
+    currentFilters.typeName = '';
+    updateFilterBadge();
+    renderActiveFilters();
+    applyFiltersAndRender();
+}
+
 function clearAllFilters() {
-    currentFilters = { brands: [], search: '', minPrice: null, maxPrice: null };
+    currentFilters = { brands: [], search: '', minPrice: null, maxPrice: null, typeId: null, typeName: '' };
 
     document.querySelectorAll('.brand-chip.active').forEach(chip => chip.classList.remove('active'));
 
@@ -312,6 +363,11 @@ function applyFiltersAndRender() {
     }
     if (currentFilters.maxPrice !== null) {
         filtered = filtered.filter(p => parseFloat(p.price) <= currentFilters.maxPrice);
+    }
+
+    // Filtro por categoría
+    if (currentFilters.typeId) {
+        filtered = filtered.filter(p => parseInt(p.type_id || p.product_type_id, 10) === currentFilters.typeId);
     }
 
     // Filtro de búsqueda
@@ -441,17 +497,12 @@ async function loadProducts(page = 1) {
 
 // Renderizar tarjeta de producto
 function renderProductCard(product) {
-    const rating = product.rating || (Math.random() > 0.3 ? 5 : 4);
     const isNew = product.is_new || (Math.random() > 0.7);
     const isSale = product.is_sale || (Math.random() > 0.85);
     let badge = '';
     if (product.featured) badge = '<span class="product-badge">Destacado</span>';
     else if (isSale) badge = '<span class="badge-sale">Oferta</span>';
     else if (isNew) badge = '<span class="badge-new">Nuevo</span>';
-
-    const starsHtml = Array(5).fill(0).map((_, i) =>
-        `<i class="fas fa-star ${i < rating ? '' : 'empty'}"></i>`
-    ).join('');
 
     return `
         <div class="product-card" onclick="openProductModal(${product.id})"
@@ -474,7 +525,6 @@ function renderProductCard(product) {
             <div class="product-info">
                 <span class="product-brand">${escapeHtml(product.brand_name || 'Sin marca')}</span>
                 <h3 class="product-name">${escapeHtml(product.name)}</h3>
-                <div class="rating-stars">${starsHtml}</div>
                 <span class="product-type">${escapeHtml(product.type_name || '')}</span>
                 <div class="product-footer">
                     <span class="product-price">${formatPrice(product.price)}</span>
@@ -974,8 +1024,18 @@ function moveCarousel(dir) {
 // ============================================
 // FILTRO POR CATEGORIA (legacy compat)
 // ============================================
+function filterByCategoryType(typeId, typeName) {
+    currentFilters.typeId = typeId;
+    currentFilters.typeName = typeName || '';
+    updateFilterBadge();
+    renderActiveFilters();
+    applyFiltersAndRender();
+    document.getElementById('productsSection')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Legacy alias
 function filterByCategory(category) {
-    showToast('Usa el panel de Filtros para filtrar por marca o precio', 'info');
+    filterByCategoryType(category, String(category));
 }
 
 // ============================================

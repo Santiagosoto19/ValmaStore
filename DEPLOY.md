@@ -51,17 +51,17 @@ El archivo `.env` **no se sube a GitHub**. Debes copiar las mismas variables en 
 
 En el [Dashboard de Vercel](https://vercel.com/dashboard) → tu proyecto → **Settings** → **Environment Variables**, agrega:
 
-| Variable | Valor | Notas |
-|----------|-------|-------|
-| `DATABASE_URL` | Cadena de conexión de Neon | La misma que tienes en `.env` local |
-| `JWT_SECRET` | Secreto largo y aleatorio | **No** uses el de ejemplo |
-| `JWT_EXPIRES_IN` | `24h` | Opcional |
-| `WHATSAPP_NUMBER` | ej. `573001234567` | Sin espacios ni `+` |
-| `BASE_URL` | `https://tu-app.vercel.app` | URL final de Vercel (sin `/` al final) |
-| `CLOUDINARY_CLOUD_NAME` | De tu dashboard Cloudinary | Para subir imágenes desde el admin |
-| `CLOUDINARY_API_KEY` | De tu dashboard Cloudinary | |
-| `CLOUDINARY_API_SECRET` | De tu dashboard Cloudinary | |
-| `NODE_ENV` | `production` | Vercel suele setearlo solo |
+| Variable                  | Valor                         | Notas                                   |
+| ------------------------- | ----------------------------- | --------------------------------------- |
+| `DATABASE_URL`          | Cadena de conexión de Neon   | La misma que tienes en`.env` local    |
+| `JWT_SECRET`            | Secreto largo y aleatorio     | **No** uses el de ejemplo         |
+| `JWT_EXPIRES_IN`        | `24h`                       | Opcional                                |
+| `WHATSAPP_NUMBER`       | ej.`573001234567`           | Sin espacios ni`+`                    |
+| `BASE_URL`              | `https://tu-app.vercel.app` | URL final de Vercel (sin`/` al final) |
+| `CLOUDINARY_CLOUD_NAME` | De tu dashboard Cloudinary    | Para subir imágenes desde el admin     |
+| `CLOUDINARY_API_KEY`    | De tu dashboard Cloudinary    |                                         |
+| `CLOUDINARY_API_SECRET` | De tu dashboard Cloudinary    |                                         |
+| `NODE_ENV`              | `production`                | Vercel suele setearlo solo              |
 
 Marca las variables para **Production** (y Preview si quieres).
 
@@ -147,10 +147,10 @@ Cada `git push` a `main` vuelve a desplegar en Vercel.
 
 ## Solución de problemas
 
-| Problema | Solución |
-|----------|----------|
-| Error de conexión a BD | Revisa `DATABASE_URL` en Vercel; debe incluir SSL |
-| Login no guarda sesión | Confirma `BASE_URL` y que usas HTTPS en producción |
-| Imágenes rotas | Usa URLs externas o configura `BASE_URL` correcto |
-| 404 en rutas | Verifica que existan `vercel.json` y `api/index.js` |
-| Admin lento al inicio | Normal con Neon (cold start + latencia de red) |
+| Problema                | Solución                                              |
+| ----------------------- | ------------------------------------------------------ |
+| Error de conexión a BD | Revisa`DATABASE_URL` en Vercel; debe incluir SSL     |
+| Login no guarda sesión | Confirma`BASE_URL` y que usas HTTPS en producción   |
+| Imágenes rotas         | Usa URLs externas o configura`BASE_URL` correcto     |
+| 404 en rutas            | Verifica que existan`vercel.json` y `api/index.js` |
+| Admin lento al inicio   | Normal con Neon (cold start + latencia de red)         |

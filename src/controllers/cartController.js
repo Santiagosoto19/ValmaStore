@@ -209,7 +209,7 @@ const getWhatsAppLink = async (req, res) => {
         const summary = await Cart.getSummary(cart.id);
         const { buildCartWhatsAppMessage, buildWhatsAppUrl } = require('../utils/whatsappMessage');
         const message = buildCartWhatsAppMessage(fullCart.items, summary.subtotal);
-        const whatsappNumber = (process.env.WHATSAPP_NUMBER || '573001234567').replace(/\D/g, '');
+        const whatsappNumber = (process.env.WHATSAPP_NUMBER || '573224969398').replace(/\D/g, '');
         const whatsappLink = buildWhatsAppUrl(whatsappNumber, message);
 
         res.json(apiResponse(true, {
