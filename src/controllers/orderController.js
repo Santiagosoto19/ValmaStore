@@ -180,9 +180,9 @@ const getAllOrders = async (req, res) => {
 
         if (includeStats === 'true') {
             const cache = require('../utils/cache');
-            const cached = cache.get('orders:stats:v2');
+            const cached = cache.get('orders:stats:v3');
             tasks.push(cached ? Promise.resolve(cached) : Order.getStats().then(s => {
-                cache.set('orders:stats:v2', s, 30000);
+                cache.set('orders:stats:v3', s, 30000);
                 return s;
             }));
         }
@@ -217,7 +217,7 @@ const updateOrderStatus = async (req, res) => {
             return res.status(404).json(apiResponse(false, null, 'Pedido no encontrado'));
         }
 
-        require('../utils/cache').del('orders:stats:v2');
+        require('../utils/cache').del('orders:stats:v3');
         res.json(apiResponse(true, order, 'Estado actualizado exitosamente'));
     } catch (error) {
         console.error('Error actualizando estado:', error);

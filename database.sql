@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS brands (
     name VARCHAR(100) NOT NULL UNIQUE,
     description TEXT,
     logo_url VARCHAR(255),
+    is_active BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

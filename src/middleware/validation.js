@@ -125,6 +125,30 @@ const orderStatusValidation = [
     handleValidationErrors
 ];
 
+const brandValidation = [
+    body('name')
+        .trim()
+        .notEmpty().withMessage('El nombre de la marca es requerido')
+        .isLength({ max: 100 }).withMessage('El nombre no puede exceder 100 caracteres'),
+    body('description').optional().trim(),
+    body('logoUrl').optional({ checkFalsy: true }).trim().isURL().withMessage('URL de logo inválida'),
+    body('isActive').optional().isBoolean().withMessage('isActive debe ser booleano'),
+    handleValidationErrors
+];
+
+const brandUpdateValidation = [
+    param('id').isInt().withMessage('ID de marca inválido'),
+    body('name')
+        .optional()
+        .trim()
+        .notEmpty().withMessage('El nombre no puede estar vacío')
+        .isLength({ max: 100 }).withMessage('El nombre no puede exceder 100 caracteres'),
+    body('description').optional().trim(),
+    body('logoUrl').optional({ nullable: true }).trim(),
+    body('isActive').optional().isBoolean().withMessage('isActive debe ser booleano'),
+    handleValidationErrors
+];
+
 module.exports = {
     registerValidation,
     loginValidation,
@@ -132,5 +156,7 @@ module.exports = {
     cartItemValidation,
     orderValidation,
     productFilterValidation,
-    orderStatusValidation
+    orderStatusValidation,
+    brandValidation,
+    brandUpdateValidation
 };

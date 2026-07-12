@@ -227,11 +227,13 @@
         </div>
     </footer>
 
-    <!-- Modal de Producto -->
+    <!-- Modal de Producto (Vista Rápida) -->
     <div class="modal" id="productModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeModal"><i class="fas fa-times" onclick=" closeProductModal()"></i></button>
-            <div class="modal-body" id="modalBody">
+        <div class="modal-content modal-product-quickview">
+            <button class="modal-close" id="closeModal" type="button" aria-label="Cerrar" onclick="closeProductModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-body modal-body-quickview" id="modalBody">
                 <!-- Contenido del modal se carga dinamicamente -->
             </div>
         </div>

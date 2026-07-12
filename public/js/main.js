@@ -615,29 +615,43 @@ async function openProductModal(productId) {
 }
 
 function renderProductDetail(product) {
+    const stock = Number(product.stock) || 0;
+    const stockLabel = stock === 0
+        ? 'Agotado'
+        : stock === 1
+            ? '1 unidad disponible'
+            : `${stock} unidades disponibles`;
+    const stockClass = stock === 0 ? 'product-meta-badge--out' : stock <= 5 ? 'product-meta-badge--low' : '';
+
     return `
-        <div class="product-detail">
-            <div class="product-detail-image">
-                <img src="${resolveProductImage(product.image_url)}" alt="${escapeHtml(product.name)}">
+        <div class="product-detail product-quickview">
+            <div class="product-detail-image product-quickview-image">
+                <img src="${resolveProductImage(product.image_url)}" alt="${escapeHtml(product.name)}" loading="lazy">
             </div>
-            <div class="product-detail-info">
+            <div class="product-detail-info product-quickview-info">
                 <span class="product-detail-brand">${escapeHtml(product.brand_name || 'Sin marca')}</span>
-                <h2>${escapeHtml(product.name)}</h2>
+                <h2 class="product-detail-title">${escapeHtml(product.name)}</h2>
                 <div class="product-detail-price">${formatPrice(product.price)}</div>
-                <div class="product-detail-description">
+                <p class="product-detail-description">
                     ${escapeHtml(product.description || 'Sin descripción disponible.')}
-                </div>
+                </p>
                 <div class="product-detail-meta">
-                    <p><i class="fas fa-tag"></i> ${escapeHtml(product.type_name || 'Sin categoría')}</p>
-                    <p><i class="fas fa-box"></i> ${product.stock} unidades disponibles</p>
+                    <span class="product-meta-badge">
+                        <i class="fas fa-tag" aria-hidden="true"></i>
+                        <span>${escapeHtml(product.type_name || 'Sin categoría')}</span>
+                    </span>
+                    <span class="product-meta-badge product-meta-badge--stock ${stockClass}">
+                        <i class="fas fa-box" aria-hidden="true"></i>
+                        <span>${stockLabel}</span>
+                    </span>
                 </div>
-                <div class="product-detail-actions">
-                    <div class="quantity-selector">
-                        <button onclick="updateModalQuantity(-1)">-</button>
+                <div class="product-detail-actions product-quickview-actions">
+                    <div class="quantity-selector quantity-selector--modal" role="group" aria-label="Cantidad">
+                        <button type="button" onclick="updateModalQuantity(-1)" aria-label="Disminuir cantidad">−</button>
                         <span id="modalQuantity">1</span>
-                        <button onclick="updateModalQuantity(1)">+</button>
+                        <button type="button" onclick="updateModalQuantity(1)" aria-label="Aumentar cantidad">+</button>
                     </div>
-                    <button class="btn btn-primary btn-lg" onclick="addToCartFromModal(${product.id})">
+                    <button type="button" class="btn btn-primary btn-lg product-quickview-cta" onclick="addToCartFromModal(${product.id})" ${stock === 0 ? 'disabled' : ''}>
                         <i class="fas fa-cart-plus"></i> Agregar al Carrito
                     </button>
                 </div>

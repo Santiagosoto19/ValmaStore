@@ -5,10 +5,10 @@ const cache = require('../utils/cache');
 const { apiResponse, paginate, sanitizeSearch } = require('../utils/helpers');
 
 async function getCachedBrands() {
-    let brands = cache.get('brands:all');
+    let brands = cache.get('brands:active');
     if (!brands) {
-        brands = await Brand.findAll();
-        cache.set('brands:all', brands, 300000);
+        brands = await Brand.findAll({ activeOnly: true });
+        cache.set('brands:active', brands, 300000);
     }
     return brands;
 }

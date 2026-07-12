@@ -246,13 +246,13 @@ const deleteProduct = async (req, res) => {
     }
 };
 
-// Obtener todas las marcas
+// Obtener marcas activas (tienda / selects)
 const getBrands = async (req, res) => {
     try {
-        let brands = cache.get('brands:all');
+        let brands = cache.get('brands:active');
         if (!brands) {
-            brands = await Brand.findAll();
-            cache.set('brands:all', brands, 300000);
+            brands = await Brand.findAll({ activeOnly: true });
+            cache.set('brands:active', brands, 300000);
         }
         res.json(apiResponse(true, brands));
     } catch (error) {
@@ -261,21 +261,80 @@ const getBrands = async (req, res) => {
     }
 };
 
+const getAdminBrands = async (req, res) => {
+    try {
+        const brands = await Brand.findAll();
+        res.json(apiResponse(true, brands));
+    } catch (error) {
+        console.error('Error obteniendo marcas admin:', error);
+        res.status(500).json(apiResponse(false, null, 'Error al obtener marcas'));
+    }
+};
+
+function invalidateBrandCache() {
+    cache.del('brands:active');
+    cache.del('brands:all');
+}
+
 // Crear marca (Admin)
 const createBrand = async (req, res) => {
     try {
-        const { name, description, logoUrl } = req.body;
+        const { name, description, logoUrl, isActive = true } = req.body;
 
         const existingBrand = await Brand.findByName(name);
         if (existingBrand) {
             return res.status(400).json(apiResponse(false, null, 'La marca ya existe'));
         }
 
-        const brand = await Brand.create({ name, description, logoUrl });
+        const brand = await Brand.create({ name, description, logoUrl, isActive });
+        invalidateBrandCache();
         res.status(201).json(apiResponse(true, brand, 'Marca creada exitosamente'));
     } catch (error) {
         console.error('Error creando marca:', error);
         res.status(500).json(apiResponse(false, null, 'Error al crear marca'));
+    }
+};
+
+const updateBrand = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, logoUrl, isActive } = req.body;
+
+        const existing = await Brand.findById(id);
+        if (!existing) {
+            return res.status(404).json(apiResponse(false, null, 'Marca no encontrada'));
+        }
+
+        if (name && name !== existing.name) {
+            const duplicate = await Brand.findByName(name);
+            if (duplicate) {
+                return res.status(400).json(apiResponse(false, null, 'Ya existe una marca con ese nombre'));
+            }
+        }
+
+        const brand = await Brand.update(id, { name, description, logoUrl, isActive });
+        invalidateBrandCache();
+        res.json(apiResponse(true, brand, 'Marca actualizada exitosamente'));
+    } catch (error) {
+        console.error('Error actualizando marca:', error);
+        res.status(500).json(apiResponse(false, null, 'Error al actualizar marca'));
+    }
+};
+
+const toggleBrandStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { isActive } = req.body;
+        const existing = await Brand.findById(id);
+        if (!existing) {
+            return res.status(404).json(apiResponse(false, null, 'Marca no encontrada'));
+        }
+        const brand = await Brand.update(id, { isActive: Boolean(isActive) });
+        invalidateBrandCache();
+        res.json(apiResponse(true, brand, isActive ? 'Marca activada' : 'Marca desactivada'));
+    } catch (error) {
+        console.error('Error cambiando estado de marca:', error);
+        res.status(500).json(apiResponse(false, null, 'Error al cambiar estado de la marca'));
     }
 };
 
@@ -360,7 +419,10 @@ module.exports = {
     updateProduct,
     deleteProduct,
     getBrands,
+    getAdminBrands,
     createBrand,
+    updateBrand,
+    toggleBrandStatus,
     getProductTypes,
     createProductType,
     getFeaturedProducts,

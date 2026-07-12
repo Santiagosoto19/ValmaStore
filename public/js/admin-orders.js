@@ -17,8 +17,6 @@
         cancelled: 'times'
     };
 
-    let statsRendered = false;
-
     document.addEventListener('DOMContentLoaded', () => {
         bindEvents();
         initPage();
@@ -51,7 +49,6 @@
                 page: String(page),
                 limit: '10'
             });
-            if (!statsRendered) params.set('includeStats', 'true');
             if (status) params.set('status', status);
             if (search) params.set('search', search);
             if (dateFrom) params.set('dateFrom', dateFrom);
@@ -68,27 +65,10 @@
 
             renderOrders(data.data.orders);
             renderPagination(data.data.pagination);
-            if (data.data.stats && !statsRendered) {
-                requestAnimationFrame(() => {
-                    renderOrderStats(data.data.stats);
-                    statsRendered = true;
-                });
-            }
         } catch (error) {
             if (error.name === 'AbortError') return;
             AdminCommon.showToast('Error al cargar pedidos', 'error');
         }
-    }
-
-    function renderOrderStats(s) {
-        const grid = document.getElementById('orderStats');
-        grid.innerHTML = `
-            <div class="stat-card"><div class="stat-icon stat-icon-blue"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><span class="stat-value">${Number(s.total_count) || 0}</span><span class="stat-label">Total Pedidos Hoy</span></div></div>
-            <div class="stat-card"><div class="stat-icon stat-icon-gold"><i class="fas fa-clock"></i></div><div class="stat-info"><span class="stat-value">${Number(s.pending_count) || 0}</span><span class="stat-label">Pendientes</span></div></div>
-            <div class="stat-card"><div class="stat-icon stat-icon-pink"><i class="fas fa-check-circle"></i></div><div class="stat-info"><span class="stat-value">${Number(s.paid_count) || 0}</span><span class="stat-label">Pagados Hoy</span></div></div>
-            <div class="stat-card"><div class="stat-icon stat-icon-green"><i class="fas fa-dollar-sign"></i></div><div class="stat-info"><span class="stat-value">${AdminCommon.formatPrice(s.total_revenue)}</span><span class="stat-label">Ingresos Hoy</span></div></div>
-        `;
-        grid.classList.remove('stats-grid--hidden');
     }
 
     function clearOrderFilters() {

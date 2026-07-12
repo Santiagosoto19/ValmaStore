@@ -266,16 +266,30 @@ class Order {
         const sql = `
             SELECT
                 (SELECT COUNT(*)::int FROM orders WHERE status = 'pending') as pending_count,
-                (SELECT COUNT(*)::int FROM orders WHERE status = 'confirmed' AND DATE(created_at) = CURRENT_DATE) as confirmed_count,
-                (SELECT COUNT(*)::int FROM orders WHERE status = 'paid' AND DATE(created_at) = CURRENT_DATE) as paid_count,
-                (SELECT COUNT(*)::int FROM orders WHERE status = 'processing') as processing_count,
-                (SELECT COUNT(*)::int FROM orders WHERE status = 'shipped' AND DATE(created_at) = CURRENT_DATE) as shipped_count,
-                (SELECT COUNT(*)::int FROM orders WHERE status = 'delivered' AND DATE(created_at) = CURRENT_DATE) as delivered_count,
-                (SELECT COUNT(*)::int FROM orders WHERE status = 'cancelled' AND DATE(created_at) = CURRENT_DATE) as cancelled_count,
                 (SELECT COUNT(*)::int FROM orders WHERE DATE(created_at) = CURRENT_DATE) as total_count,
-                (SELECT COALESCE(SUM(total_amount), 0) FROM orders
-                    WHERE DATE(created_at) = CURRENT_DATE
-                    AND status IN ('paid', 'shipped', 'delivered')) as total_revenue
+                (SELECT COUNT(*)::int
+                    FROM orders o
+                    WHERE DATE(COALESCE(
+                        o.paid_at,
+                        (SELECT MIN(h.created_at) FROM order_status_history h
+                         WHERE h.order_id = o.id AND h.status = 'paid')
+                    )) = CURRENT_DATE
+                    AND (
+                        o.paid_at IS NOT NULL
+                        OR EXISTS (
+                            SELECT 1 FROM order_status_history h2
+                            WHERE h2.order_id = o.id AND h2.status = 'paid'
+                        )
+                    )
+                ) as paid_count,
+                (SELECT COALESCE(SUM(o.total_amount), 0)
+                    FROM orders o
+                    WHERE o.paid_at IS NOT NULL
+                       OR EXISTS (
+                           SELECT 1 FROM order_status_history h
+                           WHERE h.order_id = o.id AND h.status = 'paid'
+                       )
+                ) as total_revenue
         `;
         const result = await query(sql);
         return result.rows[0];

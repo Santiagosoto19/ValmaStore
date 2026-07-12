@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Marcas - Valma</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="admin-logo">
+                <i class="fas fa-sparkles"></i>
+                <span>VALMA</span>
+            </a>
+            <span class="admin-badge">Admin</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/admin" class="nav-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/productos" class="nav-item">
+                <i class="fas fa-box"></i>
+                <span>Productos</span>
+            </a>
+            <a href="/admin/pedidos" class="nav-item">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Pedidos</span>
+            </a>
+            <a href="/admin/marcas" class="nav-item active">
+                <i class="fas fa-tags"></i>
+                <span>Marcas</span>
+            </a>
+            <a href="/admin/marquee" class="nav-item">
+                <i class="fas fa-bullhorn"></i>
+                <span>Banner Marquee</span>
+            </a>
+            <a href="/" class="nav-item">
+                <i class="fas fa-store"></i>
+                <span>Ver Tienda</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button type="button" class="nav-item" id="btnAdminLogout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-page-toolbar">
+            <header class="admin-header">
+                <h1>Gestión de Marcas</h1>
+                <div class="header-actions">
+                    <button type="button" class="btn btn-primary" id="btnOpenBrandModal">
+                        <i class="fas fa-plus"></i> Nueva Marca
+                    </button>
+                </div>
+            </header>
+        </div>
+
+        <div class="admin-content admin-list-layout admin-list-layout--compact">
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Marca</th>
+                            <th>Descripción</th>
+                            <th>Productos</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="brandsTable">
+                        <tr><td colspan="5" class="admin-table-loading"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="brandModal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2 id="brandModalTitle">Nueva Marca</h2>
+                <button type="button" class="modal-close" id="btnCloseBrandModal" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="brandForm" class="brand-form">
+                <input type="hidden" id="brandId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="brandName">Nombre <span class="required">*</span></label>
+                        <input type="text" id="brandName" required maxlength="100" placeholder="Ej. Maybelline">
+                    </div>
+                    <div class="form-group">
+                        <label for="brandDescription">Descripción</label>
+                        <textarea id="brandDescription" rows="3" placeholder="Breve descripción de la marca"></textarea>
+                    </div>
+                    <label class="toggle-card brand-active-toggle">
+                        <input type="checkbox" id="brandActive" checked>
+                        <span class="toggle-card-content">
+                            <i class="fas fa-eye"></i>
+                            <span class="toggle-card-label">Marca activa</span>
+                            <span class="toggle-card-hint">Visible en la tienda y formulario de productos</span>
+                        </span>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCancelBrand">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveBrand">
+                        <i class="fas fa-save"></i> <span id="btnSaveBrandText">Crear marca</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/js/admin-common.js"></script>
+    <script src="/js/admin-brands.js"></script>
+</body>
+</html>

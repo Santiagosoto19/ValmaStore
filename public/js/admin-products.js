@@ -250,27 +250,12 @@
             renderPagination(data.data.pagination);
             updateCounter(data.data.pagination);
 
-            if (data.data.summary) {
-                requestAnimationFrame(() => renderProductStats(data.data.summary));
-            }
-
             initialLoadDone = true;
         } catch (error) {
             if (error.name === 'AbortError') return;
             console.error('Error cargando productos:', error);
             AdminCommon.showToast('Error al cargar productos', 'error');
         }
-    }
-
-    function renderProductStats(summary) {
-        const grid = document.getElementById('productStats');
-        grid.innerHTML = `
-            <div class="stat-card"><div class="stat-icon stat-icon-pink"><i class="fas fa-box"></i></div><div class="stat-info"><span class="stat-value">${summary.total}</span><span class="stat-label">Total</span></div></div>
-            <div class="stat-card"><div class="stat-icon stat-icon-green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><span class="stat-value">${summary.active}</span><span class="stat-label">Activos</span></div></div>
-            <div class="stat-card"><div class="stat-icon stat-icon-gold"><i class="fas fa-exclamation-circle"></i></div><div class="stat-info"><span class="stat-value">${summary.no_stock}</span><span class="stat-label">Sin Stock</span></div></div>
-            <div class="stat-card"><div class="stat-icon stat-icon-blue"><i class="fas fa-star"></i></div><div class="stat-info"><span class="stat-value">${summary.featured}</span><span class="stat-label">Destacados</span></div></div>
-        `;
-        grid.classList.remove('stats-grid--hidden');
     }
 
     function updateSaveButtonLabel(isEdit) {

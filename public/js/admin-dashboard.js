@@ -41,8 +41,8 @@
             document.getElementById('statsGrid').innerHTML = `
                 <div class="stat-card"><div class="stat-icon stat-icon-gold"><i class="fas fa-clock"></i></div><div class="stat-info"><span class="stat-value" data-target="${Number(stats.pending_count) || 0}">0</span><span class="stat-label">Pendientes</span></div></div>
                 <div class="stat-card"><div class="stat-icon stat-icon-blue"><i class="fas fa-check-circle"></i></div><div class="stat-info"><span class="stat-value" data-target="${Number(stats.paid_count) || 0}">0</span><span class="stat-label">Pagados Hoy</span></div></div>
-                <div class="stat-card"><div class="stat-icon stat-icon-green"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><span class="stat-value" data-target="${Number(stats.total_count) || 0}">0</span><span class="stat-label">Total Pedidos Hoy</span></div></div>
-                <div class="stat-card"><div class="stat-icon stat-icon-pink"><i class="fas fa-dollar-sign"></i></div><div class="stat-info"><span class="stat-value" data-target="${Number(stats.total_revenue) || 0}" data-currency="true">$0</span><span class="stat-label">Ingresos Hoy</span></div></div>
+                <div class="stat-card"><div class="stat-icon stat-icon-green"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><span class="stat-value" data-target="${Number(stats.total_count) || 0}">0</span><span class="stat-label">Pedidos Hoy</span></div></div>
+                <div class="stat-card"><div class="stat-icon stat-icon-pink"><i class="fas fa-dollar-sign"></i></div><div class="stat-info"><span class="stat-value" data-target="${Number(stats.total_revenue) || 0}" data-currency="true">$0</span><span class="stat-label">Ingresos Totales</span></div></div>
             `;
 
             document.querySelectorAll('.stat-card').forEach((card, i) => {

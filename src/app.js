@@ -75,6 +75,10 @@ app.get('/admin/marquee', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/admin/marquee.html'));
 });
 
+app.get('/admin/marcas', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/admin/brands.html'));
+});
+
 // Manejo de errores 404
 app.use((req, res) => {
     res.status(404).json({
